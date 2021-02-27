@@ -116,7 +116,7 @@ class BodyLayout extends StatelessWidget {
             child:
                 Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
               Padding(
-                padding: EdgeInsets.all(32),
+                padding: EdgeInsets.all(45),
               ),
               RaisedButton(
                   onPressed: () {
