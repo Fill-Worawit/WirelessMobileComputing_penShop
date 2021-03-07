@@ -1,0 +1,32 @@
+[
+    {
+        "title": "MYCOLOR", 
+        "description": "Two head fancy color pen", 
+        "picture": "assets/images/mycolor.jpg", 
+        "price": "20"
+    },
+    {
+        "title": "Pentel n100", 
+        "description": "Fancy pen", 
+        "picture": "assets/images/pentel.jpg", 
+        "price": "30"
+    },
+    {
+        "title": "Yaya", 
+        "description": "Multicolor pen", 
+        "picture": "assets/images/multicolorpen.jpg", 
+        "price": "40"
+    },
+    {   "title": "Faber-castell", 
+        "description": "Black Pen 0.5mm", 
+        "picture": "assets/images/fb_pen.jpg", 
+        "price": "10"
+    },
+    {   "title": "Faber-castell2",
+        "description": "Black Pen 0.5mm",
+        "picture": "assets/images/fb_pen.jpg",
+        "price": "10"
+    }
+
+
+]

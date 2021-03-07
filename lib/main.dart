@@ -1,7 +1,12 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'dart:async';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 int _totalPrice = 0;
+
 
 class ShopProduct {
   final String title;
@@ -10,19 +15,71 @@ class ShopProduct {
   final String price;
 
   ShopProduct(this.title, this.description, this.picture, this.price);
+  factory ShopProduct.fromJson(Map<String, dynamic> json) {
+      return ShopProduct(
+         json['title'],
+         json['description'],
+         json['picture'],
+         json['price'],
+      );
+   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    title: 'Passing Data',
-    home: ProductScreen(product: [
-      ShopProduct('MYCOLOR', 'Two head fancy color pen', 'assets/images/mycolor.jpg', '20'),
-      ShopProduct('Pentel n100', 'Fancy pen', 'assets/images/pentel.jpg', '30'),
-      ShopProduct('Yaya', 'Multicolor pen', 'assets/images/multicolorpen.jpg', '40'),
-      ShopProduct('Faber-castell', 'Black Pen 0.5mm', 'assets/images/fb_pen.jpg', '10'),
-    ]),
-  ));
+List<ShopProduct> parseProducts(String responseBody) {
+   final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+   return parsed.map<ShopProduct>((json) =>ShopProduct.fromJson(json)).toList();
 }
+Future<List<ShopProduct>> fetchProducts() async {
+   final response = await http.get('http://192.168.56.1:8000/product.json');
+   if (response.statusCode == 200) {
+      return parseProducts(response.body);
+   } else {
+      throw Exception('Unable to fetch products from the REST API');
+   }
+}
+
+void main() => runApp(MyApp(products: fetchProducts()));
+
+class MyApp extends StatelessWidget {
+   final Future<List<ShopProduct>> products;
+   MyApp({Key key, this.products}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+      return MaterialApp(
+         title: 'Passing Data',
+         home: MyHomePage(title: 'Product Navigation demo home page', products: products),
+      );
+   }
+}
+
+class MyHomePage extends StatelessWidget {
+  final String title;
+  final Future<List<ShopProduct>> products;
+  MyHomePage({Key key, this.title, this.products}) : super(key: key);
+
+  // final items = Product.getProducts();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Center(
+          child: FutureBuilder<List<ShopProduct>>(
+            future: products, builder: (context, snapshot) {
+            if (snapshot.hasError)
+              print(snapshot.error);
+            else {
+              return ProductScreen(product: snapshot.data);
+            }
+            // return the ListView widget :
+            return CircularProgressIndicator();
+            },
+          ),
+        )
+    );
+  }
+}
+
+
 
 class ProductScreen extends StatelessWidget {
   final List<ShopProduct> product;
